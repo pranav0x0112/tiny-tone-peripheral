@@ -116,11 +116,11 @@ module tt_um_tqv_peripheral_harness (
 
       if (data_valid && data_rw) begin
         data_write_n = txn_n;
-        $display("[WRITE] addr=%h data=%h data_write_n=%b EN_write_data=%b time=%t", address, data_in, data_write_n, data_valid, $time);
+        // $display("[WRITE] addr=%h data=%h data_write_n=%b EN_write_data=%b time=%t", address, data_in, data_write_n, data_valid, $time);
       end
       if (addr_valid && !data_rw) begin
         data_read_n = txn_n;
-        $display("[READ] addr=%h data_read_n=%b EN_read_data=%b time=%t", address, data_read_n, addr_valid, $time);
+        // $display("[READ] addr=%h data_read_n=%b EN_read_data=%b time=%t", address, data_read_n, addr_valid, $time);
       end
 
       data_out_masked = data_out;

@@ -37,19 +37,32 @@ module tt_um_tqv_peripheral_harness (
   always @(negedge clk) rst_reg_n <= rst_n;
 
   // The peripheral under test.
-  // **** Change the module name from tqvp_example to match your peripheral. ****
-  tqvp_example user_peripheral(
-    .clk(clk),
-    .rst_n(rst_reg_n),
-    .ui_in(ui_in_sync),
-    .uo_out(uo_out),
-    .address(address),
-    .data_in(data_in),
-    .data_write_n(data_write_n),
-    .data_read_n(data_read_n),
-    .data_out(data_out),
+  // Instantiate mkTinyTone_Peripheral (Bluespec-generated)
+  mkTinyTone_Peripheral user_peripheral(
+    .CLK(clk),
+    .RST_N(rst_reg_n),
+    // Write interface
+  .write_data_address(address),
+  .write_data_data(data_in),
+  .write_data_data_write_n(data_write_n),
+  .EN_write_data(data_valid),
+    .RDY_write_data(),    // Not used
+    // Read interface
+  .read_data_address(address),
+  .read_data_data_read_n(data_read_n),
+  .EN_read_data(addr_valid),
+    .read_data(data_out),
+    .RDY_read_data(),     // Not used
+    // Data ready
     .data_ready(data_ready),
-    .user_interrupt(user_interrupt)
+    .RDY_data_ready(),    // Not used
+    // Interrupt
+    .user_interrupt(user_interrupt),
+    .RDY_user_interrupt(),// Not used
+    // Output
+    .uo_out_ui_in(ui_in_sync),
+    .uo_out(uo_out),
+    .RDY_uo_out()         // Not used
   );
 
   // SPI data indications
@@ -103,9 +116,11 @@ module tt_um_tqv_peripheral_harness (
 
       if (data_valid && data_rw) begin
         data_write_n = txn_n;
+        $display("[WRITE] addr=%h data=%h data_write_n=%b EN_write_data=%b time=%t", address, data_in, data_write_n, data_valid, $time);
       end
       if (addr_valid && !data_rw) begin
         data_read_n = txn_n;
+        $display("[READ] addr=%h data_read_n=%b EN_read_data=%b time=%t", address, data_read_n, addr_valid, $time);
       end
 
       data_out_masked = data_out;
